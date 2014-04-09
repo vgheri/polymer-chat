@@ -1,0 +1,74 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<polymer-element name="polymer-chat"  attributes="">
+    <script src="http://localhost:3000/public/primus.js"></script>
+    <template>
+        <style>
+            /* styles for the custom element itself - lowest specificity */
+            :host { 
+                display: block;
+            }
+            /* 
+            style if an ancestor has the different class
+            :host(.different) { } 
+            */            
+        </style>
+        <template bind if="{{ !signedIn }}">
+            <h5><<>> Polymer Chat</h5>
+            <input type="text" value="{{ name }}" placeholder="Enter your name..." />
+            <br>
+            <button type="button" on-click="{{ signIn }}">Chat</button>
+        </template>
+        <template bind if="{{ signedIn }}">
+            <div id="container">                                                    
+                <div id="messages-box">
+                    <template repeat="{{ msg in messages }}">
+                        <p>{{ msg.sender }} says at {{ msg.timestamp }} : {{ msg.content }}</p>
+                    </template>
+                </div>
+                <div id="newmessage-box">
+                    <button type="button" id="btn-send" on-click="{{ sendMessage }}">Send</button>
+                    <input type="text" id="input-message" value="{{ textMessage }}" placeholder="Enter your message..." />
+                </div>
+            </div>
+        </template>
+    </template>
+    <script>
+        Polymer('polymer-chat', {            
+            signedIn: false,
+            primus: null,
+            messages: [],
+            name: '',
+            textMessage: '',
+            signIn: function(evt) {
+                var self = this;
+                evt.preventDefault();
+                this.primus = new Primus('http://localhost:3000');
+                this.primus.on('open', function() {
+                    // switch template                    
+                    self.primus.on('data', function(data) {
+                        data.timestamp = new Date(data.timestamp).toLocaleTimeString();
+                        self.messages.push(data);
+                    });
+                });
+                this.signedIn = true;
+            },
+            sendMessage: function(evt) {
+                evt.preventDefault();
+                var data = {};
+                data.sender = this.name;
+                data.content = this.textMessage;
+                data.timestamp = new Date();
+                this.primus.write(data);
+                // add the message to the list
+                data.timestamp = data.timestamp.toLocaleTimeString();
+                this.messages.push(data);
+                // reset the box
+                this.textMessage = '';
+            },
+            ready: function() {
+                this.name = 'ssVal'
+            }
+        });
+    </script>
+</polymer-element>
