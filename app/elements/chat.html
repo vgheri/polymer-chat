@@ -2,38 +2,159 @@
 
 <polymer-element name="polymer-chat"  attributes="">
     <script src="http://localhost:3000/public/primus.js"></script>
+    <link rel="stylesheet" href="assets/buttons-min.css" type="text/css" media="screen" charset="utf-8">
     <template>
         <style>
             /* styles for the custom element itself - lowest specificity */
             :host { 
                 display: block;
             }
+            #container {
+                width: 320px;
+                font-family: proxima-nova, sans-serif
+            }            
+            #header {
+                padding: 5px;
+                border: 3px solid #A8D3AF;
+                background-color: rgb(28, 184, 65);
+                border-top-left-radius: 10px;
+                border-top-right-radius: 10px;
+                border-bottom-right-radius: 0px;
+                border-bottom-left-radius: 0px;
+                color: white;                
+                text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+            }
+            #content {
+                border-color: #A8D3AF;
+                border-style: solid;
+                border-top-width: 0px;
+                border-bottom-width: 3px;
+                border-left-width: 3px;
+                border-right-width: 3px;
+                height: 200px;                
+                padding: 10px 5px 5px 5px;                                
+            }                
+            .centered-element {
+                display: block;
+                margin-left: auto;
+                margin-right: auto;
+            }
+            .big-input {
+                /*line-height: 24px;                
+                font-size: 26px;*/
+                padding: 8px; 
+                border-radius: 3px; 
+                border: 1px solid #CCC;
+                background-image: none;
+            }
+            
+            .bin-input:focus {
+                /*outline-color: #54B4AD;*/ 
+                width: 100%;
+                outline-color: rgb(28, 184, 65);
+            }
+            
+            .button-success {
+                color: white;
+                border-radius: 4px;
+                text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+                background: rgb(28, 184, 65); /* this is a green */
+            }
+            
+            .button-small {
+                font-size: 85%;
+            }
+            
+            .name-column {
+                float: left;
+                width: 20%;
+                padding: 2px;
+                background-color: #D8D8D8;
+            }
+            
+            .message-column {
+                float: left;
+                width: 60%;
+                padding: 2px;
+                word-wrap: break-word;
+            }
+             
+            .timestamp-column {
+                float: left;                
+                right: 0px;
+                margin-right: 0px;
+                text-align: center;
+                font-size: 8px;
+                font-weight: lighter;
+                width: 15%;
+                padding: 2px;
+                background-color: #F2F2F2;
+                color: gray;
+            }
+            
+            #messages-box {
+                height: 80%;
+                overflow-y: auto;                
+                font-size: 12px;
+            }
+            
+            #input-message {
+                width: 70%;
+            }
+            
+            ul {
+                list-style: none;
+                margin: 0px;
+                padding: 0px;
+            }
+            
+            li {
+                float: left;
+                display: inline;
+                /* margin-left: -25px; */
+                border-bottom: 1px solid #F2F2F2;
+                width: 100%;
+                height: 100%;
+                padding-bottom: 0px;
+            }
             /* 
             style if an ancestor has the different class
             :host(.different) { } 
             */            
         </style>
-        <template bind if="{{ !signedIn }}">
-            <h5><<>> Polymer Chat</h5>
-            <input type="text" value="{{ name }}" placeholder="Enter your name..." />
-            <br>
-            <button type="button" on-click="{{ signIn }}">Chat</button>
-        </template>
-        <template bind if="{{ signedIn }}">
-            <div id="container">                                                    
-                <div id="messages-box">
-                    <template repeat="{{ msg in messages }}">
-                        <p>{{ msg.sender }} says at {{ msg.timestamp }} : {{ msg.content }}</p>
-                    </template>
-                </div>
-                <div id="newmessage-box">
-                    <button type="button" id="btn-send" on-click="{{ sendMessage }}">Send</button>
-                    <input type="text" id="input-message" value="{{ textMessage }}" placeholder="Enter your message..." />
-                </div>
+        <div id="container">
+            <div id="header">                
+                <span id="header-title">~ Polymer Chat</span>
             </div>
-        </template>
+            <div id="content">
+                <template bind if="{{ !signedIn }}">                
+                    <img class="centered-element" width="48px" height="32px" src="assets/p-logo.svg">
+                    <br/>
+                    <input class="centered-element big-input" type="text" value="{{ name }}" placeholder="Enter your name..." />
+                    <br>
+                    <button type="button" on-click="{{ signIn }}" class="centered-element pure-button button-success">Go Chat</button>
+                </template>
+                <template bind if="{{ signedIn }}">                                                                    
+                    <div id="messages-box">
+                        <template repeat="{{ msg in messages }}">                            
+                            <ul>
+                                <li>
+                                    <div class="name-column">{{ msg.sender }}</div>
+                                    <div class="message-column">{{ msg.content }} </div>
+                                    <div class="timestamp-column">{{ msg.timestamp }}</div>
+                                </li>
+                            </ul>                            
+                        </template>
+                    </div>
+                    <div id="newmessage-box">
+                        <button type="button" id="btn-send" on-click="{{ sendMessage }}" class="pure-button button-success button-small">Send</button>
+                        <input type="text" id="input-message" class="big-input" value="{{ textMessage }}" placeholder="Enter your message..." />
+                    </div>                
+                </template>
+            </div>
+        </div>
     </template>
-    <script>
+    <script>        
         Polymer('polymer-chat', {            
             signedIn: false,
             primus: null,
@@ -49,6 +170,7 @@
                     self.primus.on('data', function(data) {
                         data.timestamp = new Date(data.timestamp).toLocaleTimeString();
                         self.messages.push(data);
+                        scrollToBottom();
                     });
                 });
                 this.signedIn = true;
@@ -63,12 +185,22 @@
                 // add the message to the list
                 data.timestamp = data.timestamp.toLocaleTimeString();
                 this.messages.push(data);
+                scrollToBottom();
                 // reset the box
                 this.textMessage = '';
             },
             ready: function() {
-                this.name = 'ssVal'
+                this.name = ''
             }
         });
+        
+        function scrollToBottom() {
+            setTimeout(function (){ 
+                var messagesBox = document.getElementById('messages-box');
+                if (messagesBox && messagesBox.scrollTop != undefined && messagesBox.scrollHeight != undefined) {
+                    messagesBox.scrollTop = messagesBox.scrollHeight;
+                }            
+            }, 100);            
+        }
     </script>
 </polymer-element>
