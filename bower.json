@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "dependencies": {
     "platform": "Polymer/platform#master",
-    "polymer": "Polymer/polymer#master"
+    "polymer": "Polymer/polymer#master",
+    "polymer-ui-collapsible": "Polymer/polymer-ui-collapsible#~0.2.2"
   },
   "devDependencies": {}
 }
