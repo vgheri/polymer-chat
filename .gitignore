@@ -5,3 +5,7 @@ test/temp
 app/bower_components
 .tmp
 test/bower_components/
+
+.bowerrc
+app/elements/list.html
+app/elements/greeting.html
