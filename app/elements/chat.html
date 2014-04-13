@@ -169,11 +169,19 @@
                 evt.preventDefault();
                 this.primus = new Primus('http://localhost:3000');
                 this.primus.on('open', function() {
-                    // switch template                    
+                    // switch template
                     self.primus.on('data', function(data) {
-                        data.timestamp = new Date(data.timestamp).toLocaleTimeString();
-                        self.messages.push(data);
-                        scrollToBottom();
+						if (data instanceof Array) {
+							data.forEach(function(elem) {
+								elem.timestamp = new Date(elem.timestamp).toLocaleTimeString();
+								self.messages.push(elem);								
+							});
+						}
+						else {
+							data.timestamp = new Date(data.timestamp).toLocaleTimeString();
+							self.messages.push(data);
+						}
+						scrollToBottom();
                     });
                 });
                 this.signedIn = true;
