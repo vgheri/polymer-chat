@@ -1,17 +1,15 @@
 Polymer-chat
 ==
---------------
 Polymer-chat is a very simple, proof-of-concept, web component for embedding an unobtrusive chat widget in your website. 
 I'm having fun building it using Google Polymer and its server side companion project is called nodeChatServer.
 
-Please note that this project is born as a self learning experiment and therefore is not meant at all to be released in the wild __as-is__!
+Please note that this project is born as a self teaching experiment and therefore is not meant at all to be released in the wild __as-is__!
 
 Every feedback is very well accepted as well as pull requests.
 
 
 How to use it
 ==
-------------
 To use this component you only need to reference Polymer and the element itself from within your HTML file.
 
 Example:
@@ -24,7 +22,6 @@ Example:
 
 How to build and play with it
 ===
----
 To build the project just clone the repository and issue command
  
 ```npm install```
