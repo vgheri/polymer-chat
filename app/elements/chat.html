@@ -108,7 +108,7 @@
                 width: 70%;
             }
             
-            ul {
+            ol {
                 list-style: none;
                 margin: 0px;
                 padding: 0px;
@@ -142,20 +142,21 @@
                         <button type="button" on-click="{{ signIn }}" class="centered-element pure-button button-success">Go Chat</button>
                     </template>
                     <template bind if="{{ signedIn }}">                                                                    
-                        <div id="messages-box">
+                        <div id="messages-box" role="log" aria-live="polite" aria-label="Chat log">
                             <template repeat="{{ msg in messages }}">                            
-                                <ul>
+                                <ol>
                                     <li>
                                         <div class="name-column">{{ msg.sender }}</div>
                                         <div class="message-column">{{ msg.content }} </div>
                                         <div class="timestamp-column">{{ msg.timestamp }}</div>
                                     </li>
-                                </ul>
+                                </ol>
                             </template>
                         </div>
                         <div id="newmessage-box">
                             <button type="button" id="btn-send" on-click="{{ sendMessage }}" class="pure-button button-success button-small">Send</button>
-                            <input type="text" id="input-message" class="big-input" value="{{ textMessage }}" placeholder="Enter your message..." />
+                            <input type="text" id="input-message" class="big-input" value="{{ textMessage }}" placeholder="Enter your message..." 
+                                   aria-controls="messages-box" role="textbox"/>
                         </div>
                     </template>
                 </div>
