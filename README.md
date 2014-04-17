@@ -10,9 +10,9 @@ Every feedback is very well accepted as well as pull requests.
 
 How to use it
 ==
-To use this component you only need to reference Polymer and the element itself from within your HTML file.
-
-Example:
+Polymer-chat at the moment relies on a Primus node server to connect to and its address is hardcoded into the polymer component.
+Therefore if you wish to use this component you need to either supply your own server and modify the URL, either ```git clone``` my other repository nodeChatsServer and start it up.
+Once this is all done, you only need to reference Polymer and the element itself from within your HTML file:
 
 ```
 <!-- Place your HTML imports here -->
