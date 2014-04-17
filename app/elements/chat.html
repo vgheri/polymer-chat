@@ -142,7 +142,8 @@
                         <button type="button" on-click="{{ signIn }}" class="centered-element pure-button button-success">Go Chat</button>
                     </template>
                     <template bind if="{{ signedIn }}">                                                                    
-                        <div id="messages-box" role="log" aria-live="polite" aria-label="Chat log">
+                        <div id="messages-box" role="status" aria-live="polite" aria-label="Chat log" aria-atomic="false" aria-busy="false"
+                             aria-relevat="additions">
                             <template repeat="{{ msg in messages }}">                            
                                 <ol>
                                     <li>
@@ -156,7 +157,7 @@
                         <div id="newmessage-box">
                             <button type="button" id="btn-send" on-click="{{ sendMessage }}" class="pure-button button-success button-small">Send</button>
                             <input type="text" id="input-message" class="big-input" value="{{ textMessage }}" placeholder="Enter your message..." 
-                                   aria-controls="messages-box" role="textbox"/>
+                                   aria-controls="messages-box" role="textbox" aria-required="false" />
                         </div>
                     </template>
                 </div>
@@ -166,8 +167,7 @@
     <script>        
         Polymer('polymer-chat', {            
             signedIn: false,
-            primus: null,
-            messages: [],
+            primus: null,            
             name: '',
             textMessage: '',
             signIn: function(evt) {
@@ -207,7 +207,8 @@
                 this.textMessage = '';
             },
             ready: function() {
-                this.name = ''
+                this.name = '',
+                this.messages = []
             }
         });
         
