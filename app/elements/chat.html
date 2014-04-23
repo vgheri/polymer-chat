@@ -2,7 +2,7 @@
 <link rel="import" href="../bower_components/polymer-ui-collapsible/polymer-ui-collapsible.html">
 
 <polymer-element name="polymer-chat"  attributes="">
-    <script src="http://localhost:3000/public/primus.js"></script>
+    <script src="http://nodechatserver-12546.onmodulus.net/public/primus.js"></script>
     <link rel="stylesheet" href="assets/buttons-min.css" type="text/css" media="screen" charset="utf-8">
     <template>
         <style>
@@ -173,7 +173,7 @@
             signIn: function(evt) {
                 var self = this;
                 evt.preventDefault();
-                this.primus = new Primus('http://localhost:3000');
+                this.primus = new Primus('ws://nodechatserver-12546.onmodulus.net');
                 this.primus.on('open', function() {
                     // switch template
                     self.primus.on('data', function(data) {
